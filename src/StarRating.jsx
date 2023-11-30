@@ -20,10 +20,12 @@ StarRating.propTypes = {
   className: PropTypes.string,
   onSetRating: PropTypes.func,
 };
+const KEY = "4a47446d";
 export default function StarRating({
   maxRating = 5,
   color = "#fcc419",
   size = 48,
+  onUserRating,
 }) {
   const [rating, setRating] = useState(0);
   const [tempRating, setTempRating] = useState(0);
@@ -34,13 +36,21 @@ export default function StarRating({
     color,
   };
 
+  const handleUserRating = (n) => {
+    setRating(() => setRating(n + 1));
+    onUserRating(n + 1);
+  };
+
+  fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
+    .then((response) => response.json())
+    .then((data) => console.log(data));
   return (
     <div style={containerStyle}>
       <div style={startContainerStyle}>
         {Array.from({ length: maxRating }, (_, n) => (
           <Star
             key={n}
-            onClick={() => setRating(n + 1)}
+            onClick={() => handleUserRating(n)}
             full={tempRating ? tempRating >= n + 1 : rating >= n + 1}
             onHoverIn={() => setTempRating(n + 1)}
             onHoverOut={() => setTempRating(0)}
